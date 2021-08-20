@@ -1,0 +1,273 @@
+/*
+ * Pueda usar esta plantilla para la carga del reto a iMaster
+ * Copie las clases de los paquetes Modelo, Vista, Controlador y Util
+ * No incluya los import de los archivos .java solo las clases
+ */
+// Importaciones necesarias en iMaster
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+
+// Util (No modificar)
+class JDBCUtilities {
+    private static final String DATABASE_LOCATION = "ProyectosConstruccion.db";
+
+    public static Connection getConnection() throws SQLException {
+        String url = "jdbc:sqlite:"+DATABASE_LOCATION;
+
+        return DriverManager.getConnection(url);
+    }
+}
+
+// Remplace en adelante por las clases de sus archivos .java
+
+// Vista
+public class VistaRequerimientos {
+
+    public static final ControladorRequerimientos controlador = new ControladorRequerimientos();
+
+    public static void requerimiento1(){
+        try {
+            var requerimiento1 = controlador.consultarRequerimiento1();
+            
+            if (requerimiento1.size() > 0){                
+                for (Requerimiento_1 Req1 : requerimiento1){
+                    System.out.printf("%d %n", Req1.getIdCompra());
+                }                
+            }else{
+                System.out.println("No se generaron registros en la consulta Requerimiento 1");
+            }            
+            // Su código()
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        
+    }
+
+    public static void requerimiento2(){
+        try {
+            var requerimiento2 = controlador.consultarRequerimiento2();
+            
+            if (requerimiento2.size() > 0){                
+                for (Requerimiento_2 Req2 : requerimiento2){
+                    System.out.printf("%d %n", Req2.getIdCompra());
+                }                
+            }else{
+                System.out.println("No se generaron registros en la consulta Requerimiento 2");
+            }                        
+            // Su código
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+    }
+
+    public static void requerimiento3(){
+        try {
+            var requerimiento3 = controlador.consultarRequerimiento3();            
+
+            if (requerimiento3.size() > 0){                
+                for (Requerimiento_3 Req3 : requerimiento3){
+                    System.out.printf("%d\t%s %n", Req3.getIdCompra(), Req3.getAnoCompra());
+                }
+            }else{
+                System.out.println("No se generaron registros en la consulta Requerimiento 3");
+            }            
+            // Su código
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+    }
+    
+}
+
+// Controlador
+public class ControladorRequerimientos {
+
+    private final Requerimiento_1Dao Requerimiento_1;
+    private final Requerimiento_2Dao Requerimiento_2;
+    private final Requerimiento_3Dao Requerimiento_3;
+    
+    public ControladorRequerimientos(){
+        this.Requerimiento_1 = new Requerimiento_1Dao();
+        this.Requerimiento_2 = new Requerimiento_2Dao();
+        this.Requerimiento_3 = new Requerimiento_3Dao();
+    }
+
+    // Su código
+    
+    public ArrayList<Requerimiento_1> consultarRequerimiento1() throws SQLException {
+        return Requerimiento_1.requerimiento1();
+        // Su código
+    }
+
+    public ArrayList<Requerimiento_2> consultarRequerimiento2() throws SQLException {
+        return Requerimiento_2.requerimiento2();
+        // Su código
+    }
+
+    public ArrayList<Requerimiento_3> consultarRequerimiento3() throws SQLException {
+        return Requerimiento_3.requerimiento3();
+        // Su código
+    }
+}
+
+// Modelo
+// VO
+public class Requerimiento_1 {
+    private Integer idCompra;
+
+    public Requerimiento_1(){
+        
+    }
+
+    public Requerimiento_1(int pIdCompra){
+        this.idCompra=pIdCompra;
+    }
+
+    public Integer getIdCompra() {
+        return idCompra;
+    }
+
+    public void setIdCompra(Integer idCompra) {
+        this.idCompra = idCompra;
+    }
+    // Su código	
+}
+
+public class Requerimiento_2 {
+    private Integer idCompra;
+
+    public Requerimiento_2(){
+        
+    }
+
+    public Requerimiento_2(int pIdCompra){
+        this.idCompra=pIdCompra;
+    }
+
+    public Integer getIdCompra() {
+        return idCompra;
+    }
+
+    public void setIdCompra(Integer idCompra) {
+        this.idCompra = idCompra;
+    }
+    // Su código
+}
+
+public class Requerimiento_3 {
+    private Integer idCompra;
+    private String anoCompra;
+
+    public Requerimiento_3(){
+        
+    }
+
+    public Requerimiento_3(int pIdCompra){
+        this.idCompra=pIdCompra;
+    }
+  
+    public Requerimiento_3(int pIdCompra, String pAnoCompra){
+        this.idCompra=pIdCompra;
+        this.anoCompra = pAnoCompra;
+    }
+
+    public Integer getIdCompra() {
+        return idCompra;
+    }
+
+    public void setIdCompra(Integer idCompra) {
+        this.idCompra = idCompra;
+    }
+
+    public String getAnoCompra() {
+        return anoCompra;
+    }
+
+    public void setAnoCompra(String anoCompra) {
+        this.anoCompra = anoCompra;
+    }
+    // Su código
+}
+
+// DAO
+public class Requerimiento_1Dao {
+    public ArrayList<Requerimiento_1> requerimiento1() throws SQLException {
+        var response = new ArrayList<Requerimiento_1>();
+        Connection connection = null;
+        try {
+            connection = JDBCUtilities.getConnection();
+            var statement = connection.prepareStatement("SELECT ID_Compra FROM Compra WHERE Pagado = 'Si'");
+            var rset = statement.executeQuery();
+            while (rset.next()) {
+                var requerimiento_1 = new Requerimiento_1();
+                requerimiento_1.setIdCompra(rset.getInt(1));                            
+                response.add(requerimiento_1);              
+            }
+            rset.close();
+            statement.close();
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+        }
+        
+        return response;
+        // Su código
+    }
+}
+
+public class Requerimiento_2Dao {
+    public ArrayList<Requerimiento_2> requerimiento2() throws SQLException {
+        var response = new ArrayList<Requerimiento_2>();
+        Connection connection = null;
+        try {
+            connection = JDBCUtilities.getConnection();
+            var statement = connection.prepareStatement("SELECT ID_Compra FROM Compra c JOIN MaterialConstruccion mc on (c.ID_MaterialConstruccion = mc.ID_MaterialConstruccion) WHERE mc.Precio_Unidad < 1100");
+            var rset = statement.executeQuery();
+            while (rset.next()) {
+                var requerimiento_2 = new Requerimiento_2();
+                requerimiento_2.setIdCompra(rset.getInt(1));
+                response.add(requerimiento_2);              
+            }
+            rset.close();
+            statement.close();
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+        }
+        return response;
+        // Su código
+    }
+}
+
+public class Requerimiento_3Dao {
+    public ArrayList<Requerimiento_3> requerimiento3() throws SQLException {
+        var response = new ArrayList<Requerimiento_3>();
+        Connection connection = null;
+        try {
+            connection = JDBCUtilities.getConnection();
+            var statement = connection.prepareStatement("SELECT ID_Proyecto , strftime('%Y',Fecha) FROM Compra c WHERE Pagado = 'Parcialmente' and strftime('%m',Fecha) = '02'");
+            var rset = statement.executeQuery();
+            while (rset.next()) {
+                var requerimiento_3 = new Requerimiento_3();
+                requerimiento_3.setIdCompra(rset.getInt(1));
+                requerimiento_3.setAnoCompra(rset.getString(2));
+
+                response.add(requerimiento_3);              
+            }
+            rset.close();
+            statement.close();
+        } finally {
+            if (connection != null) {
+                connection.close();
+            }
+        }
+        return response;
+        // Su código
+    }
+}
